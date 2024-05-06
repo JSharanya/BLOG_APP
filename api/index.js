@@ -19,4 +19,3 @@ app.listen(3000, ()=>{
 })
 
 app.get();
-app.post()
