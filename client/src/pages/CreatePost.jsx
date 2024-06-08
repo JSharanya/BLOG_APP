@@ -39,6 +39,9 @@ const CreatePost = () => {
         >
           
            Upload Image
+
+
+           
         
         </Button>
       </div>
