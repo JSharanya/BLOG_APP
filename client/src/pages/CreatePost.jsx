@@ -23,7 +23,7 @@ const CreatePost = () => {
 
   const navigate=useNavigate()
 
-  // console.log(formData);
+  console.log(formData);
 
   const handleUpdloadImage = async () => {
     try {
@@ -64,6 +64,8 @@ const CreatePost = () => {
 
   const handleSubmit =  async (e)=>{
     e.preventDefault()
+
+
     try{
       const res = await fetch('/api/post/create',{
         method:'POST',
