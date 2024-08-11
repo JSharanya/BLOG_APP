@@ -1,6 +1,7 @@
 import { Alert, Button, Modal, TextInput, Textarea } from 'flowbite-react';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import Comment from './Comment';
 import { Link, useNavigate } from 'react-router-dom';
 import { HiOutlineExclamationCircle } from 'react-icons/hi';
 
@@ -13,6 +14,7 @@ const CommentSection = ({ postId }) => {
   const [commentToDelete, setCommentToDelete] = useState(null);
   const navigate = useNavigate();
   
+  console.log(comments);
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (comment.length > 200) {
@@ -34,27 +36,27 @@ const CommentSection = ({ postId }) => {
       if (res.ok) {
         setComment('');
         setCommentError(null);
-        // setComments([data, ...comments]);
+        setComments([data, ...comments]);
       }
     } catch (error) {
       setCommentError(error.message);
     }
   };
 
-  // useEffect(() => {
-  //   const getComments = async () => {
-  //     try {
-  //       const res = await fetch(`/api/comment/getPostComments/${postId}`);
-  //       if (res.ok) {
-  //         const data = await res.json();
-  //         setComments(data);
-  //       }
-  //     } catch (error) {
-  //       console.log(error.message);
-  //     }
-  //   };
-  //   getComments();
-  // }, [postId]);
+  useEffect(() => {
+    const getComments = async () => {
+      try {
+        const res = await fetch(`/api/comment/getPostComments/${postId}`);
+        if (res.ok) {
+          const data = await res.json();
+          setComments(data);
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+    getComments();
+  }, [postId]);
 
   // const handleLike = async (commentId) => {
   //   try {
@@ -174,14 +176,8 @@ const CommentSection = ({ postId }) => {
           </div>
           {comments.map((comment) => (
             <Comment
-              key={comment._id}
-              comment={comment}
-              onLike={handleLike}
-              onEdit={handleEdit}
-              onDelete={(commentId) => {
-                setShowModal(true);
-                setCommentToDelete(commentId);
-              }}
+            key={comment._id}
+            comment={comment}
             />
           ))}
         </>
