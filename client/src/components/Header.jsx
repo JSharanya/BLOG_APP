@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
-import { Link,useLocation } from 'react-router-dom';
+import { Link,useLocation, useNavigate } from 'react-router-dom';
 import { FaSearch } from "react-icons/fa";
 import { FaMoon } from "react-icons/fa";
 import { useSelector, useDispatch } from 'react-redux';
@@ -10,8 +10,20 @@ import { signoutSuccess } from '../redux/user/userSlice';
 
 const Header = () => {
     const path=useLocation().pathname;
+    const location = useLocation();
+    const navigate = useNavigate();
     const {currentUser} = useSelector(state => state.user)
     const dispatch = useDispatch();
+    const [searchTerm, setSearchTerm] = useState('');
+
+    console.log(searchTerm);
+    useEffect(() => {
+      const urlParams = new URLSearchParams(location.search);
+      const searchTermFromUrl = urlParams.get('searchTerm');
+      if (searchTermFromUrl) {
+        setSearchTerm(searchTermFromUrl);
+      }
+    }, [location.search]);
 
     const handleSignout = async () => {
         try {
@@ -28,6 +40,14 @@ const Header = () => {
           console.log(error.message);
         }
       };
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        const urlParams = new URLSearchParams(location.search);
+        urlParams.set('searchTerm', searchTerm);
+        const searchQuery = urlParams.toString();
+        navigate(`/search?${searchQuery}`);
+      };
      
    
   return (
@@ -36,12 +56,14 @@ const Header = () => {
         <span className='px-2 py-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white'>Sharan</span>
         Blog
         </Link>
-        <form>
+        <form onSubmit={handleSubmit}>
             <TextInput
             type='text'
             placeholder='Search...'
             rightIcon={FaSearch}
             className='hidden lg:inline'
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             />
         </form>
         <Button className='w-12 h-10 lg:hidden' color='gray' pill>
